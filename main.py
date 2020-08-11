@@ -1,34 +1,27 @@
 import json
 from difflib import get_close_matches
 
-#Importing our json data and saving it to an object
 data = json.load(open("data.json"))
 
-#Function gets posible matches when a user mistypes a word
-def get_matches(user_input):
-    match_word =  get_close_matches(user_input, data.keys())[0]
-    cont_prog(match_word)
-
-#Prompts user to continue program when user enters wrong word
-def cont_prog(match_word):
-    print (f"Did you mean: '{match_word}' ?")
-    user_answer = input("Yes/No: ") 
-    if user_answer.lower() == "yes":
-        print (data[match_word])
+def find_def(word):
+    word = word.lower()
+    if word in data:
+        return data[word]
+    elif len(get_close_matches(word, data.keys())) > 0:
+        yn = input("Did you mean %s instead? Enter Y if yes, or N if no: " % get_close_matches(word, data.keys())[0])
+        if yn.lower() == "y":
+            return data[get_close_matches(word, data.keys())[0]]
+        elif yn.lower() == "n":
+            return "The word doesn't exist. Please double check it."
+        else:
+            return "We didn't understand your entry."
     else:
-        return "The word doesn't exist, please check it or update definitions."
+        return "The word doesn't exist. Please double check it."
 
-#Finds definition of the word given
-def find_def(user_input):
-    if user_input in data:
-        print (data[user_input])
-    else:
-        get_matches(user_input)
-
-#Gets user input for find_def      
-def get_word():
-    user_input = input("Enter word: ")
-    user_input = user_input.lower()
-    return find_def(user_input)
-
-print(())
+word = input("Enter word: ")
+output = find_def(word)
+if type(output) == list:
+    for item in output:
+        print(item)
+else:
+    print(output)
