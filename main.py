@@ -3,25 +3,28 @@ from difflib import get_close_matches
 
 data = json.load(open("data.json"))
 
-def translate(w):
-    w = w.lower()
-    if w in data:
-        return data[w]
-    elif len(get_close_matches(w, data.keys())) > 0:
-        yn = input("Did you mean %s instead? Enter Y if yes, or N if no: " % get_close_matches(w, data.keys())[0])
-        if yn == "Y":
-            return data[get_close_matches(w, data.keys())[0]]
-        elif yn == "N":
-            return "The word doesn't exist. Please double check it."
-        else:
-            return "We didn't understand your entry."
-    else:
-        return "The word doesn't exist. Please double check it."
 
-word = input("Enter word: ")
-output = translate(word)
-if type(output) == list:
-    for item in output:
-        print(item)
-else:
-    print(output)
+def get_matches(usrInput):
+    match =  get_close_matches(usrInput, data.keys())[0]
+    cont_prog(match)
+    
+def cont_prog(match):
+    print (f"Did you mean: '{match}' ?")
+    answer = input("Yes/No: ") 
+    if answer.lower() == "yes":
+        print("Please retype the word.")
+        user_input()
+    else:
+        return "The word doesn't exist, please check it or update definitions."
+
+def find_def(usrInput):
+    if usrInput in data:
+        return data[usrInput]
+    else:
+        get_matches(usrInput)
+        
+def user_input():
+    usrInput = input("Enter word: ")
+    return find_def(usrInput).lower()
+
+print(user_input())
