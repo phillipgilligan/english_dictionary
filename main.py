@@ -1,12 +1,14 @@
 import json
 from difflib import get_close_matches
+from rich import print as rprint
+from rich.panel import Panel
 
 data = json.load(open("data.json"))
 
 def translate(word):
     word = word.lower()
     if word in data:
-        return data[word]
+        return Panel.fit(data[word], title="Definition:", border_style="green")
     elif word.title() in data:
         return data[word.title()]
     elif word.upper() in data:
@@ -26,6 +28,6 @@ word = input("Enter word: ")
 output = translate(word)
 if type(output) == list:
     for item in output:
-        print(item)
+        rprint(item)
 else:
-    print(output)
+    rprint(output)
